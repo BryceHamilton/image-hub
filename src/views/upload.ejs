@@ -3,7 +3,24 @@
   <%- include ('partials/head.ejs'); -%>
   <body>
     <%- include ('partials/nav.ejs'); -%>
-    <label class="form-label" for="customFile">🔥 Upload your images 👇</label>
-    <input type="file" class="form-control" id="customFile" />
+    <div class="row mt-5">
+      <div class="col-md-6 m-auto">
+        <div class="card card-body text-center">
+          <h1><i class="far fa-images"></i></h1>
+          <p>
+            <span><a href="/profile"><%= user.username %></a></span>
+            <form action="/images" method="post" enctype="multipart/form-data">
+            <label class="form-label" for="customFile"
+              >🔥 Upload your images 👇</label
+            >
+            <div>
+            <input type="file" class="form-control" name="file" multiple="multiple" accept="image/*"/>
+            <input type="submit" value="Upload">
+          </div>
+          </form>
+          </p>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

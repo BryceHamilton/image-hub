@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk';
 import { RequestHandler } from 'express';
 import { asyncHandler } from '../utils/app-utils';
+import Image from '../models/image';
 require('dotenv').config();
 
 const { AWS_KEY_ID, AWS_SECRET_KEY, AWS_REGION } = process.env;
@@ -23,10 +24,13 @@ export const upload_image: RequestHandler = asyncHandler(async (req, res) => {
   };
 
   const data = await s3.upload(params).promise();
-  console.log(data);
+  const image = await new Image({
+    location: data.Location,
+    user: req.user,
+  }).save();
   res
     .status(201)
-    .json({ Message: 'Image Successfully Created', image: data.Location });
+    .json({ Message: 'Image Successfully Created', image: image.location });
 });
 
 // [READ]

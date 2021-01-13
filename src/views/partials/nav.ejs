@@ -1,9 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <ul>
     <li>
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+      <% if (user) { %>
+      <a class="btn btn-outline-success my-2 my-sm-0" href="/auth/logout">
         Logout
-      </button>
+      </a>
+      <% }%>
     </li>
   </ul>
 </nav>

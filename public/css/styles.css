@@ -1,4 +1,12 @@
-.navbar li {
+nav.navbar {
+  justify-content: flex-end;
+}
+
+nav.navbar li {
   margin: 0;
   list-style: none;
+}
+
+img.card-img {
+  height: 225px;
 }

@@ -39,7 +39,7 @@ app.use(cookieSession(cookieParams));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.static(__dirname + '/public'));
+app.use('/', express.static(__dirname + '/../public'));
 
 app.use('/auth', authRoutes);
 app.use('/', viewRoutes);
