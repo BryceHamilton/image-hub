@@ -45,6 +45,6 @@ app.use('/auth', authRoutes);
 app.use('/', viewRoutes);
 app.use('/images', imageRoutes);
 
-// app.use(catchAllErrors);
+app.use(catchAllErrors);
 
 export default app;

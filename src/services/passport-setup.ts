@@ -45,10 +45,10 @@ const googleCallback: GoogleCallback = asyncHandler(
     const user = await User.findOne({ googleId: profile.id });
     if (user) return done(null, user);
 
-    const newUser = await new User({
+    const newUser = await User.create({
       username: profile.displayName,
       googleId: profile.id,
-    }).save();
+    });
 
     return done(null, newUser);
   },

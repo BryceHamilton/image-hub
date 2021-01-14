@@ -24,10 +24,10 @@ export const upload_image: RequestHandler = asyncHandler(async (req, res) => {
   };
 
   const data = await s3.upload(params).promise();
-  const image = await new Image({
+  const image = await Image.create({
     location: data.Location,
     user: req.user,
-  }).save();
+  });
   res
     .status(201)
     .json({ Message: 'Image Successfully Created', image: image.location });
@@ -35,18 +35,9 @@ export const upload_image: RequestHandler = asyncHandler(async (req, res) => {
 
 // [READ]
 export const get_image_list: RequestHandler = asyncHandler(async (_, res) => {
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME || '',
-    Key: 'js.jpg',
-  };
-  const url = s3.getSignedUrl('getObject', params);
-  res.status(200).json({ image: '*Image*', url });
+  console.log('image list');
+  res.status(200).json({ images: 'All Images' });
 });
-
-// = (_, res) => {
-//   console.log('image list');
-//   res.status(200).json({ images: 'All Images' });
-// };
 
 export const get_image_by_id: RequestHandler = asyncHandler(async (_, res) => {
   const params = {
@@ -73,6 +64,10 @@ export const modify_image: RequestHandler = (req, res) => {
 };
 
 // [DELETE]
-export const delete_image: RequestHandler = (req, res) => {
-  res.status(204).json({ Message: 'Image Successfully Deleted' });
-};
+export const delete_image: RequestHandler = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { user } = req;
+  const image = await Image.find({ _id: id, user });
+  if (image) await Image.deleteOne({ _id: id, user });
+  res.redirect('/profile');
+});

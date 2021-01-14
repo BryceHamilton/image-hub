@@ -1,11 +1,13 @@
-import { ErrorRequestHandler, RequestHandler, Response } from 'express';
+import { ErrorRequestHandler, RequestHandler } from 'express';
 
 export const catchAllErrors: ErrorRequestHandler = (
   error,
   req,
-  res: Response,
+  res,
+  next,
 ): void => {
-  res.send({
+  console.error(error.stack);
+  res.status(error.status || 500).send({
     error: {
       status: error.status || 500,
       Message: error.message || 'Internal Server Error',
