@@ -10,12 +10,24 @@
           <p>
             <span><a href="/profile"><%= user.username %></a></span>
             <form action="/images" method="post" enctype="multipart/form-data">
-            <label class="form-label" for="customFile"
-              >🔥 Upload your images 👇</label
+            <label class="form-label"
+              >🔥 Upload your Images 👇</label
             >
             <div>
+              <label class="form-label" for='title'
+              >Title</label
+            >
+            <input type="text" class="form-control" name="title" />
+            <label class="form-label" for='description'
+            >Description</label
+          >
+            <input type="text" class="form-control" name="description" />
+            <label class="form-label"
+            >Images</label
+          >
             <input type="file" class="form-control" name="file" multiple="multiple" accept="image/*"/>
-            <input type="submit" value="Upload">
+
+            <input type="submit" value="Upload" style='margin-top: 30px;' />
           </div>
           </form>
           </p>

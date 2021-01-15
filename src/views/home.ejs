@@ -3,13 +3,11 @@
   <%- include ('partials/head.ejs'); -%>
   <body>
     <%- include ('partials/nav.ejs'); -%>
-    <div class="row mt-5">
-      <div class="col-md-6 m-auto">
-        <div class="card card-body text-center">
-          <h1><i class="far fa-images"></i></h1>
-          <p>
-            <a href="/auth/google">Login with Google</a>
-          </p>
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <% images.forEach((image) => { %> <%- include
+          ('partials/image-card.ejs', {image}); -%> <% }); %>
         </div>
       </div>
     </div>

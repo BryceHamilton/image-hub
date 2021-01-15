@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import { RequestHandler } from 'express';
 import { asyncHandler } from '../utils/app-utils';
 import Image from '../models/image';
+import { redirectToProfile } from '../handlers/auth';
 require('dotenv').config();
 
 const { AWS_KEY_ID, AWS_SECRET_KEY, AWS_REGION } = process.env;
@@ -28,9 +29,7 @@ export const upload_image: RequestHandler = asyncHandler(async (req, res) => {
     location: data.Location,
     user: req.user,
   });
-  res
-    .status(201)
-    .json({ Message: 'Image Successfully Created', image: image.location });
+  res.redirect('/profile');
 });
 
 // [READ]

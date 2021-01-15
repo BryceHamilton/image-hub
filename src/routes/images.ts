@@ -19,8 +19,9 @@ router.get('/', get_image_list);
 router.post('/', upload.single('file'), authCheck, upload_image);
 
 router.get('/:id', get_image_by_id);
+router.get('/delete/:id', authCheck, delete_image);
+
 router.put('/:id', replace_image);
 router.patch('/:id', modify_image);
-router.get('/delete/:id', authCheck, delete_image);
 
 export default router;

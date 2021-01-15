@@ -2,10 +2,18 @@
   <ul>
     <li>
       <% if (user) { %>
+      <a class="btn btn-outline-success my-2 my-sm-0" href="/">
+        <i class="far fa-images"></i>
+      </a>
+      <a class="btn btn-outline-success my-2 my-sm-0" href="/profile">
+        <%= user.username %>
+      </a>
       <a class="btn btn-outline-success my-2 my-sm-0" href="/auth/logout">
         Logout
       </a>
-      <% }%>
+      <% } else { %>
+      <a class="btn btn-outline-success my-2 my-sm-0" href="/login"> Login </a>
+      <% } %>
     </li>
   </ul>
 </nav>
