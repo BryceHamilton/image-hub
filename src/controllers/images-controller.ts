@@ -34,8 +34,8 @@ export const upload_image: RequestHandler = asyncHandler(async (req, res) => {
 
 // [READ]
 export const get_image_list: RequestHandler = asyncHandler(async (_, res) => {
-  console.log('image list');
-  res.status(200).json({ images: 'All Images' });
+  const images = await Image.find({}).exec();
+  res.status(200).json({ Message: 'All Images', images });
 });
 
 export const get_image_by_id: RequestHandler = asyncHandler(async (_, res) => {

@@ -1,15 +1,9 @@
 import express from 'express';
-import passport from 'passport';
-import { redirectToProfile, logout } from '../handlers/auth';
+import { login, signup } from '../controllers/auth-controller';
 
 const router = express.Router();
 
-router.get('/logout', logout);
-router.get('/google', passport.authenticate('google', { scope: ['profile'] }));
-router.get(
-  '/google/redirect',
-  passport.authenticate('google'),
-  redirectToProfile,
-);
+router.post('/signup', signup);
+router.get('/login', login);
 
 export default router;
