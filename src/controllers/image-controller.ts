@@ -16,15 +16,13 @@ const s3 = new AWS.S3({
 // [CREATE]
 export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
   const files: any = req.files;
-  console.log(files);
   const uploads: IImage[] = [];
-  const publicAccess: boolean = req.path[1] === 'public';
+  const publicAccess: boolean = req.path === '/public';
   try {
     files.forEach(async (file: any) => {
       if (!file.mimetype.startsWith('image')) {
         throw 'Invalid file type';
       }
-      console.log('upload', file);
       const image: IImage = await Image.create({
         location: file.location,
         user: req.user,
@@ -42,7 +40,7 @@ export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
 
 // [READ]
 export const get_image_list: RequestHandler = asyncHandler(async (_, res) => {
-  const images = await Image.find({}).exec();
+  const images = await Image.find({ publicAccess: true }).exec();
   res.status(200).json({ Message: 'All Images', images });
 });
 

@@ -28,7 +28,7 @@ const uploadPublic = multer({
     s3: s3,
     bucket: AWS_BUCKET_NAME || '',
     key: (req, file, cb) => {
-      cb(null, `${file.originalname}-${Date.now().toString()}`);
+      cb(null, `${Date.now().toString()}-${file.originalname}`);
     },
     acl: 'public-read',
   }),
@@ -51,6 +51,6 @@ router.post(
 );
 
 router.get('/:id', get_image_by_id);
-router.get('/delete/:id', [verifyToken, verifyOwner], delete_image);
+router.delete('/:id', [verifyToken, verifyOwner], delete_image);
 
 export default router;
