@@ -16,9 +16,7 @@ const s3 = new AWS.S3({
 
 // [CREATE]
 export const upload_images: RequestHandler = async (req, res) => {
-  console.log('uploading');
   const { user, headers } = req;
-  const uploads: IImage[] = [];
   const isPublic: boolean = req.path === '/public';
 
   try {
@@ -43,8 +41,10 @@ export const upload_images: RequestHandler = async (req, res) => {
             ACL: isPublic ? 'public-read' : '',
             ContentType: ftype,
           };
+
           const data = await s3.upload(params).promise();
           console.log('File [' + filename + '] Uploaded', data);
+
           const image: IImage = await Image.create({
             location: data.Location,
             key: data.Key,
@@ -52,22 +52,18 @@ export const upload_images: RequestHandler = async (req, res) => {
             isPublic,
           });
           console.log('File [' + filename + '] Saved', image);
-          uploads.push(image);
         });
       },
     );
 
     busboy.on('finish', () => {
-      res
-        .status(201)
-        .json({ Message: 'Image(s) successfully Uploaded', uploads });
+      res.status(201).json({ Message: 'Image(s) successfully Uploaded' });
     });
     req.pipe(busboy);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ Message: 'Image upload failed', error });
   }
-  res.status(201).json({ Message: 'Image(s) successfully Uploaded', uploads });
 };
 
 // [READ]
