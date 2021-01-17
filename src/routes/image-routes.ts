@@ -9,8 +9,10 @@ import {
   get_user_public_images,
   get_user_private_images,
   delete_image,
+  delete_images,
 } from '../controllers/image-controller';
 import { verifyToken, verifyOwner } from '../middleware';
+import { verifyOwnerAll } from '../middleware/verify-owner';
 
 // [CREATE]
 router.post('/', verifyToken, upload_images);
@@ -25,5 +27,6 @@ router.get('/:id', get_image_by_id);
 
 // [DELETE]
 router.delete('/:id', [verifyToken, verifyOwner], delete_image);
+router.get('/delete', [verifyToken, verifyOwnerAll], delete_images);
 
 export default router;

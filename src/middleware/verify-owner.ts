@@ -17,3 +17,20 @@ export const verifyOwner: RequestHandler = (req, res, next) => {
     },
   );
 };
+
+export const verifyOwnerAll: RequestHandler = (req, res, next) => {
+  const { images } = req.body;
+  const { user } = req;
+  images.forEach((_id: string) => {
+    Image.findOne({ user, _id }, (err: CallbackError, image: IImage) => {
+      if (err)
+        return res.status(500).json({
+          Message: 'User search failed',
+        });
+      if (!image)
+        return res.status(404).json({ Message: 'User not Authorized' });
+    });
+
+    next();
+  });
+};
