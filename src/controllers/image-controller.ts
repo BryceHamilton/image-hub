@@ -16,12 +16,13 @@ const s3 = new AWS.S3({
 
 // [CREATE]
 export const upload_images: RequestHandler = async (req, res) => {
+  console.log('uploading');
   const { user, headers } = req;
   const uploads: IImage[] = [];
   const isPublic: boolean = req.path === '/public';
 
-  const busboy = new Busboy({ headers });
   try {
+    const busboy = new Busboy({ headers });
     busboy.on(
       'file',
       (_: any, file: any, filename: any, __: any, mimetype: any) => {
@@ -123,17 +124,19 @@ export const delete_image: RequestHandler = asyncHandler(async (req, res) => {
 });
 
 export const delete_images: RequestHandler = asyncHandler(async (req, res) => {
-  const { images } = req.body;
+  const imageIds = req.body.images;
   try {
-    const imageKeys: Record<'Key', string>[] = [];
-    images.forEach(async (imageId: string) => {
+    imageIds.forEach(async (imageId: string) => {
       const image = await Image.findById(imageId).exec();
       if (!image) {
         throw `Image not found: ${imageId}`;
       }
-      imageKeys.push({ Key: image?.key || '' });
     });
-    console.log(imageKeys);
+
+    const images = await Image.find({ _id: { $in: imageIds } }).exec();
+    const imageKeys = images.map((image) => {
+      return { Key: image?.key };
+    });
 
     const params = {
       Bucket: process.env.AWS_BUCKET_NAME || '',
@@ -143,13 +146,14 @@ export const delete_images: RequestHandler = asyncHandler(async (req, res) => {
       },
     };
     await s3.deleteObjects(params).promise();
-    await Image.deleteMany({ _id: { $in: [images] } }).exec();
+    await Image.deleteMany({ _id: { $in: images } }).exec();
 
     res.status(200).json({
       Message: 'All Images Successfully Deleted',
-      deleted: images,
+      deleted: imageIds,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       Message: 'Error deleting Images',
       error,
