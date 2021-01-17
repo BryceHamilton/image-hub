@@ -37,3 +37,17 @@ export const cookieParams = {
   maxAge: DAY_IN_MILLISECONDS,
   keys: [process.env.COOKIE_KEY || 'ZG3G7YN53ML4YLAAWQVDJVA'],
 };
+
+export const cors: RequestHandler = (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.header('Access-Control-Allow-Headers', 'content-type');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method == 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({
+      Message: 'Working',
+    });
+  }
+  next();
+};
