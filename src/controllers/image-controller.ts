@@ -2,6 +2,8 @@ import AWS from 'aws-sdk';
 import { RequestHandler } from 'express';
 import { asyncHandler } from '../utils/app-utils';
 import Image, { IImage } from '../models/image';
+import Busboy from 'busboy';
+import { OutputFileType } from 'typescript';
 
 require('dotenv').config();
 
@@ -15,27 +17,54 @@ const s3 = new AWS.S3({
 
 // [CREATE]
 export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
-  const files: any = req.files;
+  const { headers } = req;
   const uploads: IImage[] = [];
   const publicAccess: boolean = req.path === '/public';
+
+  let busboy = new Busboy({ headers });
   try {
-    files.forEach(async (file: any) => {
-      if (!file.mimetype.startsWith('image')) {
-        throw 'Invalid file type';
-      }
-      const image: IImage = await Image.create({
-        location: file.location,
-        user: req.user,
-        publicAccess,
-      });
-      uploads.push(image);
-    });
-    res
-      .status(201)
-      .json({ Message: 'Image(s) successfully Uploaded', uploads });
+    busboy.on(
+      'file',
+      (_: any, file: any, filename: any, __: any, mimetype: any) => {
+        if (!mimetype.startsWith('image')) {
+          throw 'Invalid file type';
+        }
+        const chunks: any[] = [];
+        const fname = filename.replace(/ /g, '_');
+        const ftype = mimetype;
+        file.on('data', (data: any) => {
+          chunks.push(data);
+        });
+        file.on('end', async () => {
+          const params = {
+            Bucket: process.env.AWS_BUCKET_NAME || '',
+            Key: `${Date.now().toString()}-${fname}`,
+            Body: Buffer.concat(chunks),
+            ACL: 'public-read',
+            ContentType: ftype,
+          };
+          const data = await s3.upload(params).promise();
+          console.log('File [' + filename + '] Finished', data);
+          const image: IImage = await Image.create({
+            location: data.Location,
+            user: req.user,
+            publicAccess,
+          });
+          uploads.push(image);
+        });
+      },
+    );
   } catch (error) {
     res.status(500).json({ Message: 'Image upload failed', error });
   }
+
+  busboy.on('finish', () => {
+    res
+      .status(201)
+      .json({ Message: 'Image(s) successfully Uploaded', uploads });
+  });
+
+  req.pipe(busboy);
 });
 
 // [READ]

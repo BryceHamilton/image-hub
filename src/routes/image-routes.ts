@@ -1,7 +1,5 @@
 import AWS from 'aws-sdk';
 import express from 'express';
-import multer from 'multer';
-import multerS3 from 'multer-s3';
 
 const router = express.Router();
 
@@ -13,27 +11,6 @@ const s3 = new AWS.S3({
   region: AWS_REGION,
 });
 
-const uploadPrivate = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: AWS_BUCKET_NAME || '',
-    key: (req, file, cb) => {
-      cb(null, `${file.originalname}-${Date.now().toString()}`);
-    },
-  }),
-});
-
-const uploadPublic = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: AWS_BUCKET_NAME || '',
-    key: (req, file, cb) => {
-      cb(null, `${Date.now().toString()}-${file.originalname}`);
-    },
-    acl: 'public-read',
-  }),
-});
-
 import {
   get_image_list,
   upload_images,
@@ -43,12 +20,8 @@ import {
 import { verifyToken, verifyOwner } from '../middleware';
 
 router.get('/', get_image_list);
-router.post('/', [uploadPrivate.array('images'), verifyToken], upload_images);
-router.post(
-  '/public',
-  [uploadPublic.array('images'), verifyToken],
-  upload_images,
-);
+router.post('/', [verifyToken], upload_images);
+router.post('/public', [verifyToken], upload_images);
 
 router.get('/:id', get_image_by_id);
 router.delete('/:id', [verifyToken, verifyOwner], delete_image);
