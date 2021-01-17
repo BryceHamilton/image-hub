@@ -3,7 +3,6 @@ import { RequestHandler } from 'express';
 import { asyncHandler } from '../utils/app-utils';
 import Image, { IImage } from '../models/image';
 import Busboy from 'busboy';
-import { OutputFileType } from 'typescript';
 
 require('dotenv').config();
 
@@ -17,9 +16,10 @@ const s3 = new AWS.S3({
 
 // [CREATE]
 export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
-  const { headers } = req;
+  const { user, headers } = req;
+  const { title, description } = req.body;
   const uploads: IImage[] = [];
-  const publicAccess: boolean = req.path === '/public';
+  const isPublic: boolean = req.path === '/public';
 
   let busboy = new Busboy({ headers });
   try {
@@ -40,16 +40,20 @@ export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
             Bucket: process.env.AWS_BUCKET_NAME || '',
             Key: `${Date.now().toString()}-${fname}`,
             Body: Buffer.concat(chunks),
-            ACL: 'public-read',
+            ACL: isPublic ? 'public-read' : '',
             ContentType: ftype,
           };
           const data = await s3.upload(params).promise();
-          console.log('File [' + filename + '] Finished', data);
+          console.log('File [' + filename + '] Uploaded', data);
           const image: IImage = await Image.create({
             location: data.Location,
-            user: req.user,
-            publicAccess,
+            key: data.Key,
+            user,
+            isPublic,
+            title,
+            description,
           });
+          console.log('File [' + filename + '] Saved', image);
           uploads.push(image);
         });
       },
@@ -69,9 +73,37 @@ export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
 
 // [READ]
 export const get_image_list: RequestHandler = asyncHandler(async (_, res) => {
-  const images = await Image.find({ publicAccess: true }).exec();
+  const images = await Image.find({ isPublic: true })
+    .populate('user username')
+    .exec();
   res.status(200).json({ Message: 'All Images', images });
 });
+
+export const get_user_public_images: RequestHandler = asyncHandler(
+  async (req, res) => {
+    const { user } = req;
+    const images = await Image.find({ user, isPublic: true }).exec();
+    res.status(200).json({ Message: 'User Public Images', images });
+  },
+);
+
+export const get_user_private_images: RequestHandler = asyncHandler(
+  async (req, res) => {
+    const { user } = req;
+    const images = await Image.find({ user, isPublic: false }).exec();
+    const signedImages = images.map((image) => {
+      const params = {
+        Bucket: process.env.AWS_BUCKET_NAME || '',
+        Key: image.key,
+      };
+      const signedUrl = s3.getSignedUrl('getObject', params);
+      return { ...image, signedUrl };
+    });
+    res
+      .status(200)
+      .json({ Message: 'User Private Images', images: signedImages });
+  },
+);
 
 export const get_image_by_id: RequestHandler = asyncHandler(async (_, res) => {
   const params = {
@@ -86,7 +118,14 @@ export const get_image_by_id: RequestHandler = asyncHandler(async (_, res) => {
 export const delete_image: RequestHandler = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { user } = req;
-  const image = await Image.find({ _id: id, user });
-  if (image) await Image.deleteOne({ _id: id, user });
-  res.redirect('/profile');
+  const image = await Image.findOne({ _id: id, user });
+  if (image) {
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME || '',
+      Key: image.key,
+    };
+    await s3.deleteObject(params).promise();
+    await Image.deleteOne({ _id: id, user });
+    res.status(204).json({ Message: 'Image deleted' });
+  }
 });

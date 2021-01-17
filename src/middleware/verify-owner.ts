@@ -4,7 +4,7 @@ import Image, { IImage } from '../models/image';
 
 export const verifyOwner: RequestHandler = (req, res, next) => {
   Image.findOne(
-    { user: req.user, id: req.params.id },
+    { user: req.user, _id: req.params.id },
     (err: CallbackError, image: IImage) => {
       if (err)
         return res.status(500).json({
