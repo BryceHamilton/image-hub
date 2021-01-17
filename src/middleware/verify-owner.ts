@@ -1,17 +1,19 @@
 import { RequestHandler } from 'express';
 import { CallbackError } from 'mongoose';
-import { IUser } from '../models/user';
-
-const User = require('../models/user');
+import Image, { IImage } from '../models/image';
 
 export const verifyOwner: RequestHandler = (req, res, next) => {
-  User.findById(req.user, (err: CallbackError, user: IUser) => {
-    if (err)
-      return res.status(500).json({
-        Message: 'User search failed',
-      });
-    if (!user) return res.status(404).json({ Message: 'User not Authorized' });
+  Image.findOne(
+    { user: req.user, id: req.params.id },
+    (err: CallbackError, image: IImage) => {
+      if (err)
+        return res.status(500).json({
+          Message: 'User search failed',
+        });
+      if (!image)
+        return res.status(404).json({ Message: 'User not Authorized' });
 
-    next();
-  });
+      next();
+    },
+  );
 };

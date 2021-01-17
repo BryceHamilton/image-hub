@@ -17,10 +17,16 @@ export const signup: RequestHandler = (req, res) => {
   user.save((err: CallbackError, user: IUser) => {
     if (err) return res.status(500).send({ Message: err });
 
-    res.status(201).json({
-      Message: 'User succesfully created',
-      user,
+    const { id } = user;
+    const payload = { id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
+      expiresIn: '1d', // 24 hours
     });
+
+    res.cookie('token', token, { httpOnly: true });
+    res
+      .status(201)
+      .send({ Message: 'User succesfully created', user: { username } });
   });
 };
 
@@ -45,10 +51,34 @@ export const login: RequestHandler = (req, res) => {
     const { id } = user;
     const payload = { id };
     const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
-      expiresIn: 86400, // 24 hours
+      expiresIn: '1d', // 24 hours
     });
 
     res.cookie('token', token, { httpOnly: true });
-    res.status(200).send({ Message: 'User authenticated', username });
+    res.status(200).send({ Message: 'User authenticated', user: { username } });
   });
+};
+
+export const get_user: RequestHandler = (req, res) => {
+  const userId = req.user;
+  const user = User.findById(userId);
+  user.exec((err: CallbackError, user: IUser | null) => {
+    if (err) return res.status(500).send({ Message: 'User search failed' });
+    if (!user) return res.status(404).send({ message: 'User Not found' });
+
+    // refresh token
+    const { id, username } = user;
+    const payload = { id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
+      expiresIn: '1d', // 24 hours
+    });
+
+    res.cookie('token', token, { httpOnly: true });
+    res.status(200).send({ Message: 'User authenticated', user: { username } });
+  });
+};
+
+export const logout: RequestHandler = (_, res) => {
+  res.clearCookie('token');
+  res.status(200).send({ Message: 'User logged out' });
 };

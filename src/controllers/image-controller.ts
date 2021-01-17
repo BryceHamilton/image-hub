@@ -1,8 +1,8 @@
 import AWS from 'aws-sdk';
 import { RequestHandler } from 'express';
 import { asyncHandler } from '../utils/app-utils';
-import Image from '../models/image';
-import { redirectToProfile } from '../handlers/auth';
+import Image, { IImage } from '../models/image';
+
 require('dotenv').config();
 
 const { AWS_KEY_ID, AWS_SECRET_KEY, AWS_REGION } = process.env;
@@ -14,22 +14,30 @@ const s3 = new AWS.S3({
 });
 
 // [CREATE]
-export const upload_image: RequestHandler = asyncHandler(async (req, res) => {
-  const { file } = req;
-  const params = {
-    Bucket: process.env.AWS_BUCKET_NAME || '',
-    Key: file.originalname,
-    Body: file.buffer,
-    ContentType: file.mimetype,
-    ACL: 'public-read',
-  };
-
-  const data = await s3.upload(params).promise();
-  const image = await Image.create({
-    location: data.Location,
-    user: req.user,
-  });
-  res.redirect('/profile');
+export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
+  const files: any = req.files;
+  console.log(files);
+  const uploads: IImage[] = [];
+  const publicAccess: boolean = req.path[1] === 'public';
+  try {
+    files.forEach(async (file: any) => {
+      if (!file.mimetype.startsWith('image')) {
+        throw 'Invalid file type';
+      }
+      console.log('upload', file);
+      const image: IImage = await Image.create({
+        location: file.location,
+        user: req.user,
+        publicAccess,
+      });
+      uploads.push(image);
+    });
+    res
+      .status(201)
+      .json({ Message: 'Image(s) successfully Uploaded', uploads });
+  } catch (error) {
+    res.status(500).json({ Message: 'Image upload failed', error });
+  }
 });
 
 // [READ]
@@ -46,21 +54,6 @@ export const get_image_by_id: RequestHandler = asyncHandler(async (_, res) => {
   const url = s3.getSignedUrl('getObject', params);
   res.status(200).json({ image: '*Image*', url });
 });
-
-// [UPDATE]
-export const replace_image: RequestHandler = (req, res) => {
-  res.status(202).json({
-    Message: 'Image Successfully Replaced',
-    image: '*Image Replaced*',
-  });
-};
-
-export const modify_image: RequestHandler = (req, res) => {
-  res.status(202).json({
-    Message: 'Image Successfully Modified',
-    image: '*Image Modified*',
-  });
-};
 
 // [DELETE]
 export const delete_image: RequestHandler = asyncHandler(async (req, res) => {

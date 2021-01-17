@@ -30,3 +30,10 @@ export const asyncHandlerRedirect = (fn: RequestHandler): RequestHandler => (
   next,
 ): Promise<void> =>
   Promise.resolve(fn(req, res, next)).catch(() => res.redirect('/'));
+
+const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+
+export const cookieParams = {
+  maxAge: DAY_IN_MILLISECONDS,
+  keys: [process.env.COOKIE_KEY || 'ZG3G7YN53ML4YLAAWQVDJVA'],
+};
