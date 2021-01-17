@@ -18,6 +18,8 @@ const s3 = new AWS.S3({
 export const upload_images: RequestHandler = asyncHandler(async (req, res) => {
   const { user, headers } = req;
   const { title, description } = req.body;
+
+  console.log({ title, description });
   const uploads: IImage[] = [];
   const isPublic: boolean = req.path === '/public';
 
