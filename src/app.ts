@@ -2,9 +2,10 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 require('dotenv').config();
 
-import { catchAllErrors, cors } from './utils/app-utils';
+import { catchAllErrors } from './utils/app-utils';
 
 import authRoutes from './routes/auth-routes';
 import imageRoutes from './routes/image-routes';
@@ -28,7 +29,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors);
+app.use(
+  cors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  }),
+);
 
 app.use('/', express.static(__dirname + '/../public'));
 
