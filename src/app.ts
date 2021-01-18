@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 require('dotenv').config();
 
@@ -27,6 +28,7 @@ app.set('port', process.env.PORT || 4000);
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(
   cors({
