@@ -28,7 +28,7 @@ Existing Users:
 
 ![Profile](./assets/screenshots/profile.png)
 
-### Upload one or many Images
+### Upload one or many Images (Private by default)
 
 ![Upload](./assets/screenshots/upload.png)
 
