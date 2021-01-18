@@ -2,9 +2,19 @@
 
 A RESTful API serving Images with Express, Node, AWS S3, Mongoose and authentication with JWT
 
+Serving from Heroku at: https://image-hub101.herokuapp.com/images <br>
+Serving from GKE at: http://34.95.2.156/images
+
 ## Usage
 
-Visit the Client app: https://image-hub101.netlify.app
+Visit the Client app: https://image-hub101.netlify.app <br>
+(fetching from http://34.95.2.156)
+
+Existing Users:
+
+- username: a | password: a
+- username: b | password: b
+- username: c | password: c
 
 ### Browse all Public Images
 
