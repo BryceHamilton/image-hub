@@ -22,8 +22,8 @@ export const signup: RequestHandler = (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
       expiresIn: '1d', // 24 hours
     });
-
-    res.cookie('token', token, { httpOnly: true });
+    // bad! should be httpOnly and secure
+    res.cookie('token', token);
     res
       .status(201)
       .json({ Message: 'User succesfully created', user: { username } });
@@ -54,7 +54,7 @@ export const login: RequestHandler = (req, res) => {
       expiresIn: '1d',
     });
 
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('token', token);
     res.status(200).json({ Message: 'User authenticated', user: { username } });
   });
 };
@@ -73,7 +73,7 @@ export const get_user: RequestHandler = (req: any, res) => {
       expiresIn: '1d', // 24 hours
     });
 
-    res.cookie('token', token, { httpOnly: true });
+    res.cookie('token', token);
     res.status(200).json({ Message: 'User authenticated', user: { username } });
   });
 };

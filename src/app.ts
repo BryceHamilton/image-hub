@@ -1,7 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 require('dotenv').config();
@@ -28,7 +27,6 @@ app.set('port', process.env.PORT || 4000);
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cookieParser());
 
 app.use(
   cors({
@@ -36,8 +34,6 @@ app.use(
     credentials: true,
   }),
 );
-
-app.set('trust proxy', 1);
 
 app.use('/', express.static(__dirname + '/../public'));
 
