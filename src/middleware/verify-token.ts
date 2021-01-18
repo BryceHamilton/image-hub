@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const { JWT_SECRET } = process.env;
 
-export const verifyToken: RequestHandler = (req, res, next) => {
+export const verifyToken: RequestHandler = (req: any, res, next) => {
   const token = <string>req.cookies.token;
 
   if (!token) return res.status(403).send({ Message: 'No token provided!' });

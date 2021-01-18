@@ -2,7 +2,7 @@ import { RequestHandler } from 'express';
 import { CallbackError } from 'mongoose';
 import Image, { IImage } from '../models/image';
 
-export const verifyOwner: RequestHandler = (req, res, next) => {
+export const verifyOwner: RequestHandler = (req: any, res, next) => {
   Image.findOne(
     { user: req.user, _id: req.params.id },
     (err: CallbackError, image: IImage) => {
@@ -18,7 +18,7 @@ export const verifyOwner: RequestHandler = (req, res, next) => {
   );
 };
 
-export const verifyOwnerAll: RequestHandler = (req, res, next) => {
+export const verifyOwnerAll: RequestHandler = (req: any, res, next) => {
   const { images } = req.body;
   const { user } = req;
   images.forEach((_id: string) => {
