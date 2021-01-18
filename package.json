@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "./build/server.js",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "nodemon --config nodemon.json src/server.ts",
