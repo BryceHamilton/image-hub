@@ -59,7 +59,7 @@ export const login: RequestHandler = (req, res) => {
   });
 };
 
-export const get_user: RequestHandler = (req, res) => {
+export const get_user: RequestHandler = (req: any, res) => {
   const userId = req.user;
   const user = User.findById(userId);
   user.exec((err: CallbackError, user: IUser | null) => {
