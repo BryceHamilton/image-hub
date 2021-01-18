@@ -1,11 +1,11 @@
 # Image Hub
 
-A RESTful API serving Images with Express, Node, AWS S3, and Mongoose
+A RESTful API serving Images with Express, Node, AWS S3, Mongoose and authentication with JWT
 
 ## Start up
 (apologizes for the start up time)
 
-```base
+```bash
 git clone https://github.com/BryceHamilton/image-hub.git image-hub  
 cd image-hub 
 yarn \\ or npm install 
