@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+
 require('dotenv').config();
 
 import { catchAllErrors } from './utils/app-utils';
@@ -35,6 +36,8 @@ app.use(
     credentials: true,
   }),
 );
+
+app.set('trust proxy', 1);
 
 app.use('/', express.static(__dirname + '/../public'));
 
