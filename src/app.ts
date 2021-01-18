@@ -30,7 +30,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'https://image-hub101.netlify.app'],
     credentials: true,
   }),
 );
