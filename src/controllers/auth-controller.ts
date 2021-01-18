@@ -22,8 +22,7 @@ export const signup: RequestHandler = (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
       expiresIn: '1d', // 24 hours
     });
-    // bad! should be httpOnly and secure
-    res.cookie('token', token);
+    // bad! cookie should be set server side, httpOnly and secure
     res
       .status(201)
       .json({ Message: 'User succesfully created', user: { username }, token });
@@ -53,8 +52,7 @@ export const login: RequestHandler = (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
       expiresIn: '1d',
     });
-    // bad! should be httpOnly and secure
-    res.cookie('token', token);
+    // bad! cookie should be set server side, httpOnly and secure
     res
       .status(200)
       .json({ Message: 'User authenticated', user: { username }, token });
@@ -74,8 +72,7 @@ export const get_user: RequestHandler = (req: any, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET || '', {
       expiresIn: '1d', // 24 hours
     });
-    // bad! should be httpOnly and secure
-    res.cookie('token', token);
+    // bad! cookie should be set server side, httpOnly and secure
     res
       .status(200)
       .json({ Message: 'User authenticated', user: { username }, token });
