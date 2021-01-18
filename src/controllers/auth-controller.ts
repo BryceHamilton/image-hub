@@ -23,7 +23,7 @@ export const signup: RequestHandler = (req, res) => {
       expiresIn: '1d', // 24 hours
     });
 
-    res.cookie('token', token, { httpOnly: true, secure: true });
+    res.cookie('token', token, { httpOnly: true });
     res
       .status(201)
       .json({ Message: 'User succesfully created', user: { username } });
@@ -54,7 +54,7 @@ export const login: RequestHandler = (req, res) => {
       expiresIn: '1d',
     });
 
-    res.cookie('token', token, { httpOnly: true, secure: true });
+    res.cookie('token', token, { httpOnly: true });
     res.status(200).json({ Message: 'User authenticated', user: { username } });
   });
 };
