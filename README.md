@@ -1,6 +1,6 @@
 # Image Hub
 
-A RESTful API serving Images with Express, Node, AWS S3, Mongoose and authentication with JWT
+A RESTful API serving Images with Express, Node, AWS S3, Mongoose, and authentication with JWT <br> Deployed on Heroku, and GKE with Docker and Kubernetes
 
 Serving from Heroku at: https://image-hub101.herokuapp.com/images <br>
 Serving from GKE at: http://34.95.2.156/images
