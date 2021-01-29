@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-hub
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-hub
+  template:
+    metadata:
+      labels:
+        app: image-hub
+    spec:
+      containers:
+        - name: image-hub
+          image: gcr.io/imagehub-301420/image-hub:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: '8080'
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-hub
+spec:
+  type: LoadBalancer
+  selector:
+    app: image-hub
+  ports:
+    - port: 80
+      targetPort: 8080
