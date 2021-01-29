@@ -8,7 +8,7 @@ Serving from Okteto at: https://image-hub-brycehamilton.cloud.okteto.net/images
 ## Usage
 
 Visit the Client app: https://image-hub101.netlify.app <br>
-(fetching from http://34.95.2.156)
+(fetching from https://image-hub-brycehamilton.cloud.okteto.net/images)
 
 Existing Users:
 
