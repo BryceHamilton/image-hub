@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: image-hub
-          image: gcr.io/imagehub-301420/image-hub:latest
+          image: brycehamilton/image-hub:latest
           ports:
             - containerPort: 8080
           env:
