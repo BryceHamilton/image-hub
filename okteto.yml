@@ -1,0 +1,12 @@
+name: image-hub
+image: okteto/node:12
+command: bash
+sync:
+- .:/usr/src/app
+forward:
+- 9229:9229
+- 8080:8080
+resources:
+  limits:
+    cpu: "1"
+    memory: 2Gi
