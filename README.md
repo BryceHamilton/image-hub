@@ -52,9 +52,11 @@ Visit the Client app: https://image-hub101.netlify.app <br>
 
 # Delete 
 
-### One or selected Images
+### One or selected Images - `/profile`
 
 ![Delete](./assets/screenshots/delete.png)
+
+## Client App
 
 See source code for the Client app: https://github.com/BryceHamilton/image-hub-client
 
