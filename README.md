@@ -8,7 +8,8 @@ Serving from Okteto at: <s>image-hub-brycehamilton.cloud.okteto.net/images</s> [
 ## Usage
 
 Visit the Client app: https://image-hub101.netlify.app <br>
-(fetching from https://image-hub101.herokuapp.com/images)
+
+NOTE: First load might be a bit slow :/
 
 - [Browse](#browse)
 - [Login](#login-or-signup)
