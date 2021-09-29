@@ -27,6 +27,8 @@ NOTE: First load might be a bit slow :/
 
 ### All Public Images - `/`
 
+#### Each public image lists the user that posted in the bottom right corner
+
 ![Home](./assets/screenshots/home-page.png)
 
 # Login or Signup
